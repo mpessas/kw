@@ -3,23 +3,39 @@
 
 import sys
 import optparse
-from kwerrors import InvalidCommandError
+from kwtask import AVAIL_TASKS, get_kwtask
+from kwerrors import InvalidTaskError, EntryNotSpecifiedError
+from pykwallet import EntryNotFoundError
 
 
 __version__ = '0.1'
-
-TASKS = ['get', 'set',]
-
-class ValueNotFoundError(Exception):
-    pass
+ENCODING = 'UTF-8'
 
 
 def run(options, args):
-    task = args.pop(0)
-    if task not in TASKS:
-        tasks = '[' + ', '.join(TASKS) + ']' 
-        msg = u'%s is not a valid command. Available commands are %s' % (task, tasks)
-        raise InvalidCommandError(msg)
+    if not args:
+        msg = u'Task not specified. Available tasks are %s' % AVAIL_TASKS
+        raise InvalidTaskError(msg)
+    task_name = args.pop(0)
+    if not args:
+        msg = u'Entry not specified.'
+        raise EntryNotSpecifiedError(msg)
+    entry_name = args.pop(0)
+    value = None
+    if args:
+        value = args.pop(0).decode(ENCODING)
+    task = get_kwtask(task_name.decode(ENCODING),
+                      options.wallet.decode(ENCODING))
+    if not task:
+        msg = u'%s is not a valid task. Available tasks are %s' % (task_name,
+                                                                   AVAIL_TASKS)
+        raise InvalidTaskError(msg)
+    print task(options.folder.decode(ENCODING),
+               entry_name.decode(ENCODING),
+               options.key.decode(ENCODING),
+               value)
+    
+
 
 def setup_parser():
     """Setup the parser.
@@ -38,18 +54,22 @@ def setup_parser():
                       help=u'Specify the wallet to use')
     return parser
 
+
 def main(argv=None):
     if argv is None:
-        argv=sys.argv
+        argv = sys.argv
     parser = setup_parser()
     (options, args) = parser.parse_args()
     try:
         run(options, args)
-    except InvalidCommandError, e:
+    except EntryNotFoundError, e:
+        print u'Specified entry not found.'
+        return -1
+    except EntryNotSpecifiedError, e:
         print e
         return -1
-    except ValueNotFoundError, e:
-        print u'Specified entry not found.'
+    except InvalidTaskError, e:
+        print e
         return -1
     return 0
 
