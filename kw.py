@@ -12,7 +12,7 @@ from pykwallet import EntryNotFoundError
 
 
 __version__ = '0.1'
-ENCODING = 'UTF-8'
+ENCODING = sys.getfilesystemencoding()
 
 
 def run(options, args):
