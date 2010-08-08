@@ -52,7 +52,7 @@ def setup_parser():
     Returns:
         optparse.OptionParser with option configured.
     """
-    usage = u'Usage: %prog cmd_name [options]'
+    usage = u'Usage: %prog cmd_name task [options]'
     parser = optparse.OptionParser(usage=usage,
                                    version='%prog ' + __version__)
     parser.add_option('-f', '--f', dest='folder', default=u'Passwords',
