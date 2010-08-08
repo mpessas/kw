@@ -16,22 +16,22 @@ def run(options, args):
     if not args:
         msg = u'Task not specified. Available tasks are %s' % AVAIL_TASKS
         raise InvalidTaskError(msg)
-    task_name = args.pop(0)
+    task_name = args.pop(0).decode(ENCODING)
     if not args:
         msg = u'Entry not specified.'
         raise EntryNotSpecifiedError(msg)
-    entry_name = args.pop(0)
+    entry_name = args.pop(0).decode(ENCODING)
     value = None
     if args:
         value = args.pop(0).decode(ENCODING)
-    task = get_kwtask(task_name.decode(ENCODING),
+    task = get_kwtask(task_name),
                       options.wallet.decode(ENCODING))
     if not task:
         msg = u'%s is not a valid task. Available tasks are %s' % (task_name,
                                                                    AVAIL_TASKS)
         raise InvalidTaskError(msg)
     print task(options.folder.decode(ENCODING),
-               entry_name.decode(ENCODING),
+               entry_name,
                options.key.decode(ENCODING),
                value)
     
