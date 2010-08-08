@@ -9,6 +9,7 @@ import optparse
 from kwtask import AVAIL_TASKS, get_kwtask
 from kwerrors import InvalidTaskError, EntryNotSpecifiedError
 from pykwallet import EntryNotFoundError
+import pyclipboard
 
 
 __version__ = '0.1'
@@ -34,11 +35,16 @@ def run(options, args):
         msg = u'%s is not a valid task. Available tasks are %s' % (task_name,
                                                                    AVAIL_TASKS)
         raise InvalidTaskError(msg)
-    print task(options.folder.decode(ENCODING),
+    res = task(options.folder.decode(ENCODING),
                entry_name,
                options.key.decode(ENCODING),
                value)
-
+    if res:
+        clip = pyclipboard.PyClipboard()
+        clip.set_content(res)
+        
+    
+    
 
 def setup_parser():
     """Setup the parser.
