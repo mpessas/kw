@@ -28,7 +28,8 @@ def run(options, args):
     value = None
     if args:
         value = args.pop(0).decode(ENCODING)
-    task = get_kwtask(task_name, options.wallet.decode(ENCODING))
+    task = get_kwtask(task_name)
+    task.open_wallet(options.wallet.decode(ENCODING))
     if not task:
         msg = u'%s is not a valid task. Available tasks are %s' % (task_name,
                                                                    AVAIL_TASKS)

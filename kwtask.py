@@ -12,11 +12,6 @@ AVAIL_TASKS = '[' + ', '.join(TASKS) + ']'
 class KwTask(object):
     """Base class for the available tasks."""
 
-    def __init__(self, wallet):
-        self.wallet = wallet
-        app_name = u'kw'
-        self.kw = pykwallet.KWallet(app_name, wallet=self.wallet)
-
     def __call__(self, folder, entry, key, value=None):
         self.kw.open()
         self.kw.set_folder(folder)
@@ -35,6 +30,12 @@ class KwTask(object):
             the result or None for error."""
         pass
 
+    def open_wallet(self, wallet):
+        """Open the specified wallet."""
+        self.wallet = wallet
+        app_name = u'kw'
+        self.kw = pykwallet.KWallet(app_name, wallet=self.wallet)
+
 
 class GetKwTask(KwTask):
     """Class to get values from KWallet."""
@@ -52,8 +53,8 @@ class SetKwTask(KwTask):
         return self.kw.set(self.entry, self.value, self.key)
 
 
-def get_kwtask(task, wallet):
+def get_kwtask(task):
     """Return the correct object for the specified task."""
     task_classes = {TASKS[0]: GetKwTask,
                    TASKS[1]: SetKwTask}
-    return task in task_classes and task_classes[task](wallet)
+    return task in task_classes and task_classes[task]()
