@@ -4,7 +4,9 @@
 import unittest
 import kw
 
+
 class TestKwArgs(unittest.TestCase):
+
     def test_get_task(self):
         self.assertFalse(kw.run((), ['get']))
 
@@ -13,9 +15,9 @@ class TestKwArgs(unittest.TestCase):
 
     def test_set_task(self):
         self.assertFalse(kw.run((), ['set']))
-        
+
     def test_wrong_task(self):
-        self.assertRaises(kw.InvalidTaskError, kw.run, (), ['invalid_task',])
+        self.assertRaises(kw.InvalidTaskError, kw.run, (), ['invalid_task', ])
 
 
 if __name__ == '__main__':

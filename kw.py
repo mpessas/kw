@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Get and set values to kwallet.
+Default action for get is to copy the value to the KDE clipboard."""
+
 import sys
 import optparse
 from kwtask import AVAIL_TASKS, get_kwtask
@@ -13,6 +16,7 @@ ENCODING = 'UTF-8'
 
 
 def run(options, args):
+    """Execute the specified task."""
     if not args:
         msg = u'Task not specified. Available tasks are %s' % AVAIL_TASKS
         raise InvalidTaskError(msg)
@@ -24,8 +28,7 @@ def run(options, args):
     value = None
     if args:
         value = args.pop(0).decode(ENCODING)
-    task = get_kwtask(task_name),
-                      options.wallet.decode(ENCODING))
+    task = get_kwtask(task_name, options.wallet.decode(ENCODING))
     if not task:
         msg = u'%s is not a valid task. Available tasks are %s' % (task_name,
                                                                    AVAIL_TASKS)
@@ -34,7 +37,6 @@ def run(options, args):
                entry_name,
                options.key.decode(ENCODING),
                value)
-    
 
 
 def setup_parser():

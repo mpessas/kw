@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""This module provides classes for the tasks available to use kwallet."""
+
 import pykwallet
 from kwerrors import ValueNotSpecifiedError
 
@@ -8,6 +10,8 @@ AVAIL_TASKS = '[' + ', '.join(TASKS) + ']'
 
 
 class KwTask(object):
+    """Base class for the available tasks."""
+
     def __init__(self, wallet):
         self.wallet = wallet
         app_name = u'kw'
@@ -24,15 +28,24 @@ class KwTask(object):
         return res
 
     def call(self):
+        """Abstract function to actuall execute the task.
+
+        Override this to provide a new task.
+        Returns:
+            the result or None for error."""
         pass
 
 
 class GetKwTask(KwTask):
+    """Class to get values from KWallet."""
+
     def call(self):
         return self.kw.get(self.entry, self.key)
 
 
 class SetKwTask(KwTask):
+    """Class to set values to KWallet."""
+
     def call(self):
         if not self.value:
             raise ValueNotSpecifiedError(u'No value has been specified.')
@@ -40,6 +53,7 @@ class SetKwTask(KwTask):
 
 
 def get_kwtask(task, wallet):
-    taskClasses = {TASKS[0]: GetKwTask,
+    """Return the correct object for the specified task."""
+    task_classes = {TASKS[0]: GetKwTask,
                    TASKS[1]: SetKwTask}
-    return taskClasses.has_key(task) and taskClasses[task](wallet)
+    return task in task_classes and task_classes[task](wallet)
