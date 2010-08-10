@@ -13,14 +13,13 @@ class KwTask(object):
     """Base class for the available tasks."""
 
     def __call__(self, folder, entry, key, value=None):
-        self.kw.open()
-        self.kw.set_folder(folder)
-        self.entry = entry
-        self.key = key
-        self.value = value
-        res = self.call()
-        self.kw.close()
-        return res
+        with self.kw.open():
+            self.kw.set_folder(folder)
+            self.entry = entry
+            self.key = key
+            self.value = value
+            res = self.call()
+            return res
 
     def call(self):
         """Abstract function to actuall execute the task.
